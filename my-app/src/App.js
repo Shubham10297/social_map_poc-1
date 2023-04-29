@@ -1,43 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { Graph } from "react-d3-graph";
+import SearchInput from "./components/Search/Search";
+import SocialMap from './components/SocialMap';
+// import {edges, nodes} from './constant/data';
+import { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
-  const data = {
-    nodes: [{ id: "Harry" }, { id: "Sally" }, { id: "Alice" }, { id: "s" } ,{ id: "a" }],
-    links: [
-      { source: "Harry", target: "Sally" },
-      { source: "Harry", target: "Alice" },
-      { source: "Harry", target: "s" },
-      { source: "Harry", target: "a" },
+  // const[userId , setUserId] = useState(0);
+  const[usersFollowing , setUsersFollowing] = useState([]);
+  const[GraphData, setGraphData] = useState({
+    nodes:[],
+    edges:[]
+  });
 
-    ],
-  };
-  
-  // the graph configuration, just override the ones you need
-  const myConfig = {
-    nodeHighlightBehavior: true,
-    node: {
-      color: "lightgreen",
-      size: 120,
-      highlightStrokeColor: "blue",
-    },
-    link: {
-      highlightColor: "lightblue",
-    },
-  };
-  
   return (
-    <div className="App">
-
-      <Graph
-  id="graph-id" // id is mandatory
-  data={data}
-  config={myConfig}
-/>;
-    </div>
-  );
+		<div className="App">
+			<SearchInput
+				setGraphData={setGraphData}
+				setUsersFollowing={setUsersFollowing}
+			/>
+			<SocialMap
+				edges={GraphData.edges}
+				nodes={GraphData.nodes}
+				usersFollowing={usersFollowing}
+				setUsersFollowing={setUsersFollowing}
+        setGraphData={setGraphData}
+			/>
+			<ToastContainer />
+		</div>
+	);
 }
 
 export default App;

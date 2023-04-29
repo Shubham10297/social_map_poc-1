@@ -1,0 +1,19 @@
+.filter_searchCont {
+    background: #ffffff;
+    border: 1px solid #d9e0f6;
+    box-sizing: border-box;
+    border-radius: 6px;
+    padding: 8px 10px;
+    display: flex;
+    font-size: 12px;
+    max-width: 15rem;
+    /* height: 2.2rem; */
+  }
+  .filter_searchCont_input {
+    width: 100%;
+  }
+  .filter_searchCont_input,
+  .filter_searchCont_input :focus {
+    border: 0;
+    outline: none;
+  }
