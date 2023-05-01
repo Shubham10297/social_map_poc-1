@@ -5,13 +5,24 @@ import { getUserFollowingByUserId } from "../actions/APIActions";
 import "../../node_modules/vis-network/dist/dist/vis-network.min.css";
 
 const SocialMap = (props) => {
-    const { nodes, edges, usersFollowing, setUsersFollowing,setGraphData } = props;
+    const {
+			nodes,
+			edges,
+			usersFollowing,
+			setUsersFollowing,
+			setGraphData,
+			setSearchInput,
+            setIsLoading
+		} = props;
     const GraphData = {nodes: nodes, edges: edges};
 
     let options = {
 			// layout: {
 			//     hierarchical: true
 			//   },
+            shapeProperties: {
+                interpolation: false    // 'true' for intensive zooming
+              },
 			autoResize: true,
 			nodes: {
 				shape: "dot",
@@ -42,10 +53,21 @@ const SocialMap = (props) => {
 			physics: {
 				// Even though it's disabled the options still apply to network.stabilize().
 				enabled: true,
-				solver: "repulsion",
-				repulsion: {
-					nodeDistance: 300, // Put more distance between the nodes.
-				},
+				// solver:"repulsion" ,
+				// repulsion: {
+				// 	nodeDistance: 250, // Put more distance between the nodes.
+				// },
+                // stabilization: {
+                //     enabled: true,
+                //     iterations: 5000    // YMMV
+                //   }
+                barnesHut: {
+                    gravitationalConstant: -50000, // This is the default * 25.
+                    nodeDistance: 250
+                  },
+                  stabilization: {
+                    enabled: false // This is here just to see what's going on from the very beginning.
+                  }
 			},
 			// tooltipStyle: {
 			// 	content: {
@@ -64,8 +86,8 @@ const SocialMap = (props) => {
 				hover: true,
 				navigationButtons: false,
 				tooltipDelay: 100,
-				hideEdgesOnDrag: false,
-				hideEdgesOnZoom: false,
+				hideEdgesOnDrag: true,
+				hideEdgesOnZoom: true,
 				dragNodes: true,
 			},
 			height: "900px",
@@ -74,13 +96,15 @@ const SocialMap = (props) => {
         select: async function(event) {
 					const { nodes } = event;
 					console.log(nodes[0]);
-					alert("User Clicked: " + nodes[0]);
+					// alert("User Clicked: " + nodes[0]);
 					const userData = usersFollowing.filter(
 						(item) => item.pk.toString() === nodes[0].toString(),
 					);
+                    setSearchInput("");
+                    setIsLoading(true);
 					const followingData = await getUserFollowingByUserId(
-						userData,
-						userData?.following_count,
+						userData[0],
+						userData[0]?.following_count,
 					);
 					setUsersFollowing(followingData);
 					const { nodes: nodesData, edges: edgesData } =
@@ -91,18 +115,28 @@ const SocialMap = (props) => {
 					if (nodesData.length && edgesData.length) {
 						setGraphData({ nodes: nodesData, edges: edgesData });
 					}
-				}
+                    setIsLoading(false);
+				},
+                // stabilized: (network) => {
+                //     if (network) { // Network will be set using getNetwork event from the Graph component
+                //         // network.setOptions({ physics: false }); // Disable physics after stabilization
+                //         network.fit();
+                //     }
+                // }
       };
 
    
   return (
-    <div className='container'>
-        <Graph
-            graph = {GraphData}
-            options={options}
-            events={events}
-        />
-    </div>
-  )
+		<div className="container">
+			<Graph
+				graph={GraphData}
+				options={options}
+				events={events}
+				// getNetwork={(network) => {
+				// 	setNetwork(network);
+				// }}
+			/>
+		</div>
+	);
 }
 export default SocialMap;
