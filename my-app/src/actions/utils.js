@@ -17,8 +17,8 @@ export const parseUserDataIntoNodesEdges = (OriginUser,data) => {
         {
         id: +OriginUser?.pk,
         label: OriginUser?.full_name,
-        title: OriginUser?.full_name,
-        // color: '#'+Math.floor(Math.random()*16777215).toString(16)
+        title: OriginUser?.username,
+        color: '#'+Math.floor(Math.random()*16777215).toString(16)
     })
     for(const item of data){
         if(!item.is_private){
@@ -26,8 +26,8 @@ export const parseUserDataIntoNodesEdges = (OriginUser,data) => {
                 {
                 id: +item?.pk,
                 label: item?.full_name,
-                title: item?.full_name ,
-                // color: '#'+Math.floor(Math.random()*16777215).toString(16)
+                title: item?.username ,
+                color: '#'+Math.floor(Math.random()*16777215).toString(16)
             })
             edges.push(
                 { 
